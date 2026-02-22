@@ -1,70 +1,16 @@
-# Getting Started with Create React App
+Project Proposal
+Book Tracker is a simple web application that helps users keep track of the books they have read or plan to read. The main goal of this project is to create an easy and organized way to manage personal reading progress.
+The target audience is students and people who enjoy reading. Many people forget which books they already finished or which ones they want to read next. This application solves that problem by showing all books in one place. The Minimum Viable Product (MVP) includes displaying a list of books, showing the title, author, and reading status, and allowing users to add new books in future updates.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+SPA Theory Answers
+What is a Single Page Application (SPA)?
+A Single Page Application (SPA) is a web application that loads only one HTML page. Instead of reloading the entire page, it updates only the necessary parts of the content. This makes the application faster and smoother for users. The experience feels more like a mobile app. React applications are usually built as SPAs.
 
-## Available Scripts
+How does SPA differ from traditional Multi-Page Applications (MPA)?
+In a Multi-Page Application (MPA), every time the user clicks a link, the browser loads a completely new page from the server. In a Single Page Application, the page does not fully reload. Instead, JavaScript updates only the content that changes. SPAs are usually faster and provide a more dynamic user experience, while MPAs rely more on server-side rendering.
 
-In the project directory, you can run:
+What is the Virtual DOM?
+The Virtual DOM is a lightweight copy of the real DOM. React first updates the Virtual DOM when changes happen. Then it compares it with the real DOM and updates only the parts that changed. This process makes the application more efficient and improves performance.
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Why does React use a component-based architecture?
+React uses a component-based architecture to make code more organized and reusable. Each part of the interface is built as a separate component. Components can be reused in different parts of the application. This makes development easier, cleaner, and more maintainable.
