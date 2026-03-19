@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Header from "../components/Header";
+import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import AddBookForm from "../components/AddBookForm";
-import BookCard from "../components/BookCard";
-import SearchBar from "../components/SearchBar";
-import BookCounter from "../components/BookCounter";
+import AddBookModal from "../components/AddBookModal";
+import BookList from "../components/BookList";
+import Sidebar from "../components/Sidebar";
 import EmptyState from "../components/EmptyState";
 
 function Home() {
@@ -12,87 +11,104 @@ function Home() {
     const saved = localStorage.getItem("books");
     return saved ? JSON.parse(saved) : [];
   });
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState("All");
 
-  
+  const [search, setSearch] = useState("");
+  const [genre, setGenre] = useState("All"); 
+  const [statusFilter, setStatusFilter] = useState("All"); 
+  const statusOptions = ["All", "Reading", "Planning", "Read", "Abandoned"];
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   useEffect(() => {
     localStorage.setItem("books", JSON.stringify(books));
   }, [books]);
 
-  const addBook = (book) => {
-    const newBook = { id: Date.now(), ...book, status: null };
+
+  const addBook = ({ title, author, genre }) => {
+    const newBook = { id: Date.now(), title, author, genre, status: null };
     setBooks([...books, newBook]);
+    setIsModalOpen(false);
   };
 
+  
   const deleteBook = (id) => {
     setBooks(books.filter((book) => book.id !== id));
   };
 
   const updateBookStatus = (id, newStatus) => {
     setBooks((prev) =>
-      prev.map((book) =>
-        book.id === id ? { ...book, status: newStatus } : book
-      )
+      prev.map((book) => (book.id === id ? { ...book, status: newStatus } : book))
     );
   };
 
+
   const filteredBooks = books.filter((book) => {
     const matchesSearch = book.title.toLowerCase().includes(search.toLowerCase());
-    const matchesFilter = filter === "All" || book.status === filter;
-    return matchesSearch && matchesFilter;
+    const matchesGenre = genre === "All" || book.genre === genre;
+    const matchesStatus = statusFilter === "All" || book.status === statusFilter;
+    return matchesSearch && matchesGenre && matchesStatus;
   });
-
-  const statusFilters = ["All", "Reading", "Planning", "Read", "Abandoned"];
 
   return (
     <>
-      <Header />
+      <Navbar onAddClick={() => setIsModalOpen(true)} />
 
-      <main className="main">
-        <h2>Your Library</h2>
-        <p>Track and manage your favorite books</p>
+      <main className="main-layout">
+        <div className="content-wrapper">
+          {}
+          <Sidebar
+            search={search}
+            setSearch={setSearch}
+            books={books}
+            genre={genre}
+            setGenre={setGenre}
+          />
+
+          {}
+          <div className="books-right">
+            {}
+            <div className="books-header">
+              <div className="library-title">
+                <h2>Your Library</h2>
+                <p>Track and manage your favorite books</p>
+              </div>
+
+              <div className="status-filter">
+                {statusOptions.map((s) => (
+                  <button
+                    key={s}
+                    className={`status-filter-btn ${
+                      statusFilter === s ? "active-filter" : ""
+                    }`}
+                    onClick={() => setStatusFilter(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {}
+            <section className="books-container">
+              {filteredBooks.length === 0 ? (
+                <EmptyState />
+              ) : (
+                <BookList
+                  books={filteredBooks}
+                  onDelete={deleteBook}
+                  onStatusChange={updateBookStatus}
+                />
+              )}
+            </section>
+          </div>
+        </div>
 
         {}
-        <div className="status-menu">
-          {statusFilters.map((s) => (
-            <button
-              key={s}
-              className={`filter-btn ${filter === s ? "active-filter" : ""}`}
-              onClick={() => setFilter(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-
-        <div className="library-container">
-          {}
-          <div className="sidebar">
-            <SearchBar search={search} setSearch={setSearch} />
-            <AddBookForm onAddBook={addBook} />
-            <BookCounter count={filteredBooks.length} />
-          </div>
-
-          {}
-          <div className="books-container">
-            {filteredBooks.length === 0 ? (
-              <EmptyState />
-            ) : (
-              filteredBooks.map((book) => (
-                <BookCard
-                  key={book.id}
-                  id={book.id}
-                  title={book.title}
-                  author={book.author}
-                  status={book.status}
-                  onStatusChange={(newStatus) => updateBookStatus(book.id, newStatus)}
-                  onDelete={() => deleteBook(book.id)}
-                />
-              ))
-            )}
-          </div>
-        </div>
+        {isModalOpen && (
+          <AddBookModal
+            onAddBook={addBook}
+            onClose={() => setIsModalOpen(false)}
+          />
+        )}
       </main>
 
       <Footer />
