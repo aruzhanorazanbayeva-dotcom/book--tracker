@@ -19,17 +19,53 @@ function BookCard({ id, title, author, genre, status, onStatusChange, onDelete }
     <div
       className="book-card"
       style={{
+        width: "220px",
+        minWidth: "220px",
+        padding: "16px",
+        borderRadius: "12px",
+        backgroundColor: "#1b2a41",
+        color: "#f5f5f5",
         position: "relative",
-        borderLeft: `4px solid ${statusColors[status] || "#c9a27c"}`
+        borderLeft: `4px solid ${statusColors[status] || "#c9a27c"}`,
+        display: "flex",
+        flexDirection: "column",
+        gap: "6px"
       }}
     >
+      <h3 style={{ fontSize: "18px", color: "#f6d1b1", marginBottom: "8px" }}>{title}</h3>
+      <p style={{ margin: 0, fontSize: "14px" }}>Author: {author}</p>
+      <p style={{ margin: 0, fontSize: "14px" }}>Genre: {genre}</p>
+
+      {!status && onStatusChange && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
+          {statuses.map((s) => (
+            <button
+              key={s}
+              onClick={() => handleClick(s)}
+              style={{
+                padding: "4px 8px",
+                borderRadius: "6px",
+                border: "none",
+                cursor: "pointer",
+                backgroundColor: "#c9a27c",
+                color: "#1b2a41",
+                fontWeight: "bold",
+                fontSize: "12px"
+              }}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      )}
+
       {onDelete && (
         <button
           onClick={onDelete}
           style={{
             position: "absolute",
             bottom: "8px",
-            right: "12px", 
+            right: "12px",
             width: "24px",
             height: "24px",
             borderRadius: "50%",
@@ -47,34 +83,6 @@ function BookCard({ id, title, author, genre, status, onStatusChange, onDelete }
         >
           🗑️
         </button>
-      )}
-
-      <h3 style={{ fontSize: "18px", color: "#f6d1b1", marginBottom: "8px" }}>{title}</h3>
-      <p style={{ color: "#f5f5f5", marginBottom: "4px", fontSize: "14px" }}>Author: {author}</p>
-      <p style={{ color: "#f5f5f5", marginBottom: "4px", fontSize: "14px" }}>Genre: {genre}</p>
-
-      {!status && onStatusChange && (
-        <div className="status-buttons">
-          {statuses.map((s) => (
-            <button
-              key={s}
-              className="status-btn"
-              style={{
-                padding: "4px 8px",
-                margin: "2px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-                backgroundColor: "#c9a27c",
-                color: "#1b2a41",
-                fontWeight: "bold",
-              }}
-              onClick={() => handleClick(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
       )}
     </div>
   );

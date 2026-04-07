@@ -7,11 +7,11 @@ function AddBookForm({ onAddBook, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!title || !author || !genre) {
-      return alert("Fill all fields!");
-    }
+    if (!title || !author || !genre) return alert("Fill all fields!");
 
-    onAddBook({ title, author, genre, status: null });
+    onAddBook({ title, author, genre });
+
+    // очищаем форму
     setTitle("");
     setAuthor("");
     setGenre("");
@@ -19,13 +19,6 @@ function AddBookForm({ onAddBook, onClose }) {
 
   return (
     <form onSubmit={handleSubmit} className="add-book-form">
-      {}
-      <button type="button" className="close-modal" onClick={onClose}>
-        ✖
-      </button>
-
-      <h2>Add a New Book</h2>
-
       <input
         type="text"
         placeholder="Book Title"
@@ -45,9 +38,14 @@ function AddBookForm({ onAddBook, onClose }) {
         onChange={(e) => setGenre(e.target.value)}
       />
 
-      <button type="submit" className="add-btn">
-        Add Book
-      </button>
+      <div className="form-buttons">
+        <button type="submit" className="add-btn">
+          Add Book
+        </button>
+        <button type="button" onClick={onClose}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
