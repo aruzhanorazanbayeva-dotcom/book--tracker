@@ -1,134 +1,165 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+} from "react";
+
 import EmptyState from "../components/EmptyState";
 import BookList from "../components/BookList";
-import AddBookModal from "../components/AddBookModal";
 import SearchBar from "../components/SearchBar";
+import { BooksContext } from "../context/BooksContext";
+import useDebounce from "../hooks/useDebounce";
 
-function Home({ books, setBooks }) {
+function Home() {
+  const {
+    books,
+    deleteBook,
+    updateStatus,
+    loading,
+    error,
+  } = useContext(BooksContext);
+
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const statusOptions = ["All", "Reading", "Planning", "Read", "Abandoned"];
+  const debouncedSearch = useDebounce(search, 400);
+
+  const statusOptions = ["All", "Reading", "Planning", "Finished", "Abandoned"];
   const genreOptions = ["All", "Romance", "Fantasy", "Classic", "Science"];
 
-  const addBook = ({ title, author, genre }) => {
-    const newBook = { id: Date.now(), title, author, genre, status: null };
-    setBooks((prev) => [newBook, ...prev]); // новые книги сверху
-    setIsModalOpen(false);
-  };
+  // =========================
+  // FILTER (useMemo)
+  // =========================
+  const filteredBooks = useMemo(() => {
+    if (!books) return [];
 
-  const deleteBook = (id) => {
-    setBooks((prev) => prev.filter((book) => book.id !== id));
-  };
+    return books.filter((book) => {
+      const matchesSearch =
+        book.title?.toLowerCase().includes(debouncedSearch.toLowerCase());
 
-  const updateBookStatus = (id, newStatus) => {
-    setBooks((prev) =>
-      prev.map((book) => (book.id === id ? { ...book, status: newStatus } : book))
+      const matchesGenre = genre === "All" || book.genre === genre;
+
+      const matchesStatus =
+        statusFilter === "All" || book.status === statusFilter;
+
+      return matchesSearch && matchesGenre && matchesStatus;
+    });
+  }, [books, debouncedSearch, genre, statusFilter]);
+
+  // =========================
+  // useCallback (OPTIMIZATION)
+  // =========================
+  const handleDelete = useCallback(
+    (id) => {
+      deleteBook(id);
+    },
+    [deleteBook]
+  );
+
+  const handleStatusChange = useCallback(
+    (id, status) => {
+      updateStatus(id, status);
+    },
+    [updateStatus]
+  );
+
+  // =========================
+  // LOADING UI
+  // =========================
+  if (loading) {
+    return (
+      <div style={{ padding: "40px", textAlign: "center" }}>
+        <div className="spinner" />
+      </div>
     );
-  };
+  }
 
-  const filteredBooks = books.filter((book) => {
-    const matchesSearch = book.title.toLowerCase().includes(search.toLowerCase());
-    const matchesGenre = genre === "All" || book.genre === genre;
-    const matchesStatus = statusFilter === "All" || book.status === statusFilter;
-    return matchesSearch && matchesGenre && matchesStatus;
-  });
+  if (error) {
+    return (
+      <div style={{ color: "red", padding: "20px" }}>
+        {error}
+      </div>
+    );
+  }
 
   return (
     <main className="home-container">
-      {/* Поисковая строка по центру */}
-      <div className="search-wrapper">
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          style={{ width: "80%", maxWidth: "600px", fontSize: "18px", padding: "14px 20px" }}
-        />
-      </div>
 
-      {/* Фильтры в один ряд */}
-      <div className="filters-wrapper" style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap" }}>
-        <div className="genre-filters" style={{ display: "flex", gap: "10px" }}>
-          {genreOptions.map((g) => (
-            <button
-              key={g}
-              className={`filter-btn ${genre === g ? "active-filter" : ""}`}
-              onClick={() => setGenre(g)}
-              style={{
-                backgroundColor: genre === g ? "#8b5e3c" : "#fff",
-                color: genre === g ? "#fff" : "#8b5e3c",
-                border: "2px solid #8b5e3c",
-                borderRadius: "12px",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              {g}
-            </button>
-          ))}
-        </div>
+      {/* SEARCH */}
+      <SearchBar search={search} setSearch={setSearch} />
 
-        <div className="status-filters" style={{ display: "flex", gap: "10px" }}>
-          {statusOptions.map((s) => (
-            <button
-              key={s}
-              className={`filter-btn ${statusFilter === s ? "active-filter" : ""}`}
-              onClick={() => setStatusFilter(s)}
-              style={{
-                backgroundColor: statusFilter === s ? "#8b5e3c" : "#fff",
-                color: statusFilter === s ? "#fff" : "#8b5e3c",
-                border: "2px solid #8b5e3c",
-                borderRadius: "12px",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Карточки книг горизонтально */}
-      <section
-        className="books-container"
+      {/* FILTERS */}
+      <div
         style={{
           display: "flex",
+          gap: "15px",
           flexWrap: "wrap",
-          gap: "20px",
-          justifyContent: "flex-start",
-          marginTop: "20px",
+          marginTop: "15px",
         }}
       >
+        {genreOptions.map((g) => (
+          <button
+            key={g}
+            onClick={() => setGenre(g)}
+            style={{
+              background: genre === g ? "#8b5e3c" : "white",
+              color: genre === g ? "white" : "#8b5e3c",
+              border: "2px solid #8b5e3c",
+              padding: "8px 12px",
+              borderRadius: "10px",
+            }}
+          >
+            {g}
+          </button>
+        ))}
+
+        {statusOptions.map((s) => (
+          <button
+            key={s}
+            onClick={() => setStatusFilter(s)}
+            style={{
+              background: statusFilter === s ? "#8b5e3c" : "white",
+              color: statusFilter === s ? "white" : "#8b5e3c",
+              border: "2px solid #8b5e3c",
+              padding: "8px 12px",
+              borderRadius: "10px",
+            }}
+          >
+            {s}
+          </button>
+        ))}
+      </div>
+
+      {/* LIST */}
+      <section style={{ marginTop: "20px" }}>
         {filteredBooks.length === 0 ? (
           <EmptyState />
         ) : (
-          <BookList books={filteredBooks} onDelete={deleteBook} onStatusChange={updateBookStatus} />
+          <BookList
+            books={filteredBooks}
+            onDelete={handleDelete}
+            onStatusChange={handleStatusChange}
+          />
         )}
       </section>
 
-      {/* Тотал книг внизу справа */}
+      {/* TOTAL */}
       <div
-        className="total-books"
         style={{
-          position: "absolute",
+          position: "fixed",
           right: "20px",
           bottom: "20px",
-          backgroundColor: "#8b5e3c",
-          color: "#1b2a41",
-          fontWeight: "bold",
+          background: "#8b5e3c",
+          color: "white",
           padding: "10px 15px",
           borderRadius: "12px",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
         }}
       >
-        Total books: {books.length}
+        Total books: {books?.length || 0}
       </div>
 
-      {isModalOpen && <AddBookModal onAddBook={addBook} onClose={() => setIsModalOpen(false)} />}
     </main>
   );
 }

@@ -1,33 +1,91 @@
-Book Tracker
+# Book Tracker App
 
-Book Tracker is a simple web application that helps users keep track of the books they have read or plan to read. The main goal of this project is to create an easy and organized way to manage personal reading progress.
+##  Project Description
+Book Tracker is a React-based web application that allows users to manage their reading progress. Users can add books, update their reading status, filter and search books, and track their reading statistics.
 
-Features
+The project is built as part of a frontend development course using React, Context API, and a mock backend (json-server).
 
-- Display a list of books with title, author, and genre
+##  Features
 
-- Add a new book through a modal form
+- Authentication simulation (login/logout with localStorage)
+- Protected routes using React Router v6
+- Add, delete, and update books (CRUD operations)
+- Update reading status (Planning / Reading / Finished / Abandoned)
+- Search books by title (debounced input)
+- Filter by genre and status
+- Book detail page (`/book/:id`)
+- Dashboard with nested routes
+- Statistics page
+- Loading, error, and empty states
+- Toast notifications for user actions
+- Responsive UI
 
-- Delete a book from the list
-
-- Filter books by status (Reading, Planning, Read, Abandoned)
-
-- Search books by title
-
-- Save books to localStorage so data persists across page reloads
-
-- Responsive layout for desktop and mobile
-
-Technologies
+##  Tech Stack
 
 - React
-
+- React Router DOM
+- Context API
+- Axios
+- JSON Server (mock backend)
 - JavaScript (ES6+)
+- HTML / CSS
 
-- HTML5 & CSS3
+##  Project Structure
 
-- LocalStorage for data persistence
-How to Run
-git clone <your-repo-link>
-npm install
-npm start
+src/
+  components/
+  context/
+  hooks/
+  pages/
+  services/
+  utils/
+
+##  Installation & Setup
+
+1. Clone repository
+
+2. Install dependencies
+
+3. Run JSON server
+
+4. Start React app
+
+##  API
+
+Mock API is running on: http://localhost:5000/books
+
+##  Data Persistence
+
+Authentication state and user session are stored in:
+- localStorage (auth)
+
+##  Main Functionalities
+
+- Create book
+- Read books list
+- Update book status
+- Delete book
+- Filter and search books
+- View book details
+
+##  State Management
+
+The project uses Context API:
+- BooksContext → manages books data and CRUD operations
+- AuthContext → manages authentication state
+
+##  Protected Routes
+
+Routes are protected using a custom ProtectedRoute component:
+- Redirects unauthenticated users to login page
+
+##  UI/UX
+
+- Responsive layout
+- Toast notifications for actions
+- Spinner loading indicator
+- Clean and minimal design
+
+##  Author
+
+Orazanbeva Aruzhan

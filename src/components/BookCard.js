@@ -1,18 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-function BookCard({ id, title, author, genre, status, onStatusChange, onDelete }) {
-  const statuses = ["Reading", "Planning", "Read", "Abandoned"];
+function BookCard({
+  id,
+  title,
+  author,
+  genre,
+  status,
+  coverImage,
+  onStatusChange,
+  onDelete
+}) {
+  const [open, setOpen] = useState(false);
+
+  const statuses = ["Reading", "Planning", "Finished", "Abandoned"];
 
   const statusColors = {
     Reading: "#5bc0de",
-    Planning: "#EAB308",
-    Read: "#28a745",
-    Abandoned: "#8b0000",
-    null: "#c9a27c"
+    Planning: "#c9a27c",
+    Finished: "#8f7a6a",
+    Abandoned: "#6b4f3a",
+    default: "#c9a27c"
   };
 
-  const handleClick = (s) => {
-    if (!status) onStatusChange(s);
+  const handleDelete = () => {
+    onDelete?.(id);
+  };
+
+  const handleStatusChange = (newStatus) => {
+    onStatusChange?.(id, newStatus);
+    setOpen(false);
   };
 
   return (
@@ -20,70 +37,160 @@ function BookCard({ id, title, author, genre, status, onStatusChange, onDelete }
       className="book-card"
       style={{
         width: "220px",
-        minWidth: "220px",
-        padding: "16px",
-        borderRadius: "12px",
-        backgroundColor: "#1b2a41",
-        color: "#f5f5f5",
-        position: "relative",
-        borderLeft: `4px solid ${statusColors[status] || "#c9a27c"}`,
+        height: "470px",            // ✅ фикс высоты (важно)
         display: "flex",
         flexDirection: "column",
-        gap: "6px"
+        borderRadius: "12px",
+        backgroundColor: "#1b2a41",
+        color: "#fff",
+        position: "relative",
+        overflow: "hidden",
+        borderLeft: `4px solid ${
+          statusColors[status] || statusColors.default
+        }`
       }}
     >
-      <h3 style={{ fontSize: "18px", color: "#f6d1b1", marginBottom: "8px" }}>{title}</h3>
-      <p style={{ margin: 0, fontSize: "14px" }}>Author: {author}</p>
-      <p style={{ margin: 0, fontSize: "14px" }}>Genre: {genre}</p>
+      {/* IMAGE */}
+      <div style={{ padding: "10px" }}>
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt={title}
+            style={{
+              width: "100%",
+              height: "260px",
+              objectFit: "cover",
+              borderRadius: "10px"
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "100%",
+              height: "260px",
+              background: "#2c3e50",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#aaa",
+              borderRadius: "10px"
+            }}
+          >
+            No Image
+          </div>
+        )}
+      </div>
 
-      {!status && onStatusChange && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginTop: "6px" }}>
-          {statuses.map((s) => (
-            <button
-              key={s}
-              onClick={() => handleClick(s)}
-              style={{
-                padding: "4px 8px",
-                borderRadius: "6px",
-                border: "none",
-                cursor: "pointer",
-                backgroundColor: "#c9a27c",
-                color: "#1b2a41",
-                fontWeight: "bold",
-                fontSize: "12px"
-              }}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {onDelete && (
-        <button
-          onClick={onDelete}
+      {/* INFO */}
+      <Link
+        to={`/book/${id}`}
+        style={{
+          textDecoration: "none",
+          color: "inherit",
+          display: "block",
+          padding: "0 10px"
+        }}
+      >
+        <h3
           style={{
-            position: "absolute",
-            bottom: "8px",
-            right: "12px",
-            width: "24px",
-            height: "24px",
-            borderRadius: "50%",
-            border: "none",
-            backgroundColor: "transparent",
-            color: "#fff",
-            cursor: "pointer",
-            fontSize: "14px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 0,
+            color: "#f6d1b1",
+            margin: "5px 0",
+            fontSize: "16px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}
-          title="Delete"
         >
-          🗑️
+          {title}
+        </h3>
+
+        <p style={{ margin: 0, fontSize: "13px", opacity: 0.8 }}>
+          {author}
+        </p>
+
+        <p style={{ margin: 0, fontSize: "13px", opacity: 0.8 }}>
+          {genre}
+        </p>
+      </Link>
+
+      {/* STATUS (фикс вниз) */}
+      <div
+        style={{
+          marginTop: "auto",   // 🔥 прижимает вниз
+          padding: "10px",
+          position: "relative"
+        }}
+      >
+        <button
+          onClick={() => setOpen(!open)}
+          style={{
+            width: "100%",
+            padding: "7px",
+            borderRadius: "8px",
+            border: "1px solid #cbb9a5",
+            background: statusColors[status] || "#c9a27c",
+            color: "#1b2a41",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+        >
+          {status || "Set status"} ▾
         </button>
-      )}
+
+        {open && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "45px",
+              left: "10px",
+              right: "10px",
+              background: "#f5f1ec",
+              borderRadius: "8px",
+              overflow: "hidden",
+              zIndex: 10,
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)"
+            }}
+          >
+            {statuses.map((s) => (
+              <div
+                key={s}
+                onClick={() => handleStatusChange(s)}
+                style={{
+                  padding: "8px",
+                  cursor: "pointer",
+                  color: "#1b2a41",
+                  borderBottom: "1px solid #e6ddd3",
+                  fontSize: "13px"
+                }}
+              >
+                {s}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* DELETE (без чёрного круга) */}
+      <button
+        onClick={handleDelete}
+        style={{
+          position: "absolute",
+          bottom: "10px",
+          right: "10px",
+          background: "transparent",   // 🔥 убрали фон
+          border: "none",
+          cursor: "pointer",
+          color: "#c9a27c",
+          fontSize: "18px",
+          width: "30px",
+          height: "30px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+      >
+        🗑
+      </button>
     </div>
   );
 }

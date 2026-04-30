@@ -1,41 +1,122 @@
-import React from "react";
-import { Outlet, Link, useLocation } from "react-router-dom";
+import React, { useState } from "react";
+import BooksCalendar from "../components/BooksCalendar";
 
-function Dashboard({ books }) {
-  const location = useLocation(); // узнаём текущий путь для активной ссылки
-
-  const links = [
-    { name: "Reading", path: "reading", color: "#5bc0de" },
-    { name: "Planning", path: "planning", color: "#EAB308" },
-  ];
+function Dashboard() {
+  const [selectedBook, setSelectedBook] = useState(null);
 
   return (
-    <div className="dashboard-container">
-      <h2 className="dashboard-title">Dashboard</h2>
-      <p className="dashboard-subtitle">Quick filters for your library:</p>
+    <div
+      style={{
+        padding: "30px",
+        background: "#0f1b2d",
+        minHeight: "100vh",
+        color: "#fff",
+        display: "flex",
+        justifyContent: "center", // 👈 центрируем весь блок
+      }}
+    >
+      {/* MAIN WRAPPER (чтобы календарь был по центру) */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "1200px",
+          display: "flex",
+          gap: "25px",
+        }}
+      >
+        {/* LEFT - CALENDAR */}
+        <div
+          style={{
+            flex: 2,
+            background: "#1b2a41",
+            padding: "25px",
+            borderRadius: "18px",
+          }}
+        >
+          {/* BIG TITLE */}
+          <h1
+            style={{
+              marginBottom: "20px",
+              fontSize: "28px",
+              fontWeight: "500",
+              letterSpacing: "1px",
+            }}
+          >
+            Reading Calendar
+          </h1>
 
-      <nav className="dashboard-nav">
-        {links.map(link => {
-          const isActive = location.pathname.endsWith(link.path);
-          return (
-            <Link
-              key={link.path}
-              to={link.path}
-              className={`dashboard-link ${isActive ? "active" : ""}`}
-              style={{
-                borderColor: link.color,
-                backgroundColor: isActive ? link.color : "transparent",
-                color: isActive ? "#fff" : link.color,
-              }}
-            >
-              {link.name}
-            </Link>
-          );
-        })}
-      </nav>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <BooksCalendar onSelectBook={setSelectedBook} />
+          </div>
+        </div>
 
-      {/* Передаём books в дочерние маршруты через context */}
-      <Outlet context={{ books }} />
+        {/* RIGHT - NETFLIX STYLE BOOK CARD */}
+        <div
+          style={{
+            flex: 1,
+            background: "#1b2a41",
+            borderRadius: "18px",
+            padding: "20px",
+            minHeight: "650px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          {!selectedBook ? (
+            <p style={{ opacity: 0.6, textAlign: "center" }}>
+              Click a book in calendar
+            </p>
+          ) : (
+            <div>
+              {/* BIG NETFLIX COVER */}
+              {selectedBook?.coverImage && (
+                <img
+                  src={selectedBook.coverImage}
+                  alt={selectedBook.title}
+                  style={{
+                    width: "100%",
+                    height: "420px", // 🔥 ВАЖНО: высокий формат как Netflix
+                    objectFit: "cover",
+                    borderRadius: "16px",
+                    marginBottom: "15px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
+                  }}
+                />
+              )}
+
+              {/* TITLE */}
+              <h2 style={{ color: "#f6d1b1", marginBottom: "10px" }}>
+                {selectedBook?.title}
+              </h2>
+
+              {/* AUTHOR + GENRE */}
+              <p style={{ margin: "4px 0", opacity: 0.85 }}>
+                <b>Author:</b> {selectedBook?.author}
+              </p>
+
+              <p style={{ margin: "4px 0", opacity: 0.85 }}>
+                <b>Genre:</b> {selectedBook?.genre}
+              </p>
+
+              {/* DATES */}
+              {selectedBook?.startDate && (
+                <p style={{ marginTop: "10px", color: "#5bc0de" }}>
+                  <b>Started:</b>{" "}
+                  {new Date(selectedBook.startDate).toLocaleDateString()}
+                </p>
+              )}
+
+              {selectedBook?.finishDate && (
+                <p style={{ color: "#28a745" }}>
+                  <b>Finished:</b>{" "}
+                  {new Date(selectedBook.finishDate).toLocaleDateString()}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,8 +1,12 @@
 import React from "react";
-import "../App.css"; // путь к CSS исправлен
+import "../App.css";
 
-function EmptyState() {
-  return <p className="empty-state">No books yet. Add your first book 📚</p>;
+function EmptyState({ message = "No books yet. Add your first book 📚" }) {
+  return (
+    <p className="empty-state">
+      {message}
+    </p>
+  );
 }
 
 export default EmptyState;

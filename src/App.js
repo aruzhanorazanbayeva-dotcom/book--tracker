@@ -1,58 +1,99 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
 
-// Pages
+import Landing from "./pages/Landing";
 import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import BookDetail from "./pages/BookDetail";
 import Dashboard from "./pages/Dashboard";
 import Reading from "./pages/Reading";
 import Planning from "./pages/Planning";
+import NotFound from "./pages/NotFound";
 
-// Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import AddBookModal from "./components/AddBookModal";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+import { ThemeProvider } from "./context/ThemeContext";
+import { BooksProvider } from "./context/BooksContext";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  const [books, setBooks] = useState(() => {
-    const saved = localStorage.getItem("books");
-    return saved ? JSON.parse(saved) : [];
-  });
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem("books", JSON.stringify(books));
-  }, [books]);
-
-  const addBook = ({ title, author, genre }) => {
-    const newBook = { id: Date.now(), title, author, genre, status: null };
-    setBooks((prev) => [...prev, newBook]);
-    setIsModalOpen(false);
-  };
-
   return (
-    <Router>
-      <Navbar openAddModal={() => setIsModalOpen(true)} />
-      <Routes>
-        <Route path="/" element={<Home books={books} setBooks={setBooks} />} />
-        <Route path="/stats" element={<Stats books={books} />} />
-        <Route path="/book/:id" element={<BookDetail books={books} />} />
-        <Route path="/dashboard" element={<Dashboard books={books} />}>
-          <Route path="reading" element={<Reading books={books} />} />
-          <Route path="planning" element={<Planning books={books} />} />
-        </Route>
-      </Routes>
-      <Footer />
+    <ThemeProvider>
+      <AuthProvider>
+        <BooksProvider>
+          <Router>
 
-      {isModalOpen && (
-        <AddBookModal
-          onAddBook={addBook}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
-    </Router>
+            <Navbar openAddModal={() => setIsModalOpen(true)} />
+
+            <Routes>
+
+              {/* PUBLIC */}
+              <Route path="/" element={<Landing />} />
+
+              {/* PROTECTED ROUTES */}
+              <Route
+                path="/home"
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/stats"
+                element={
+                  <ProtectedRoute>
+                    <Stats />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/book/:id"
+                element={
+                  <ProtectedRoute>
+                    <BookDetail />
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              >
+                <Route path="reading" element={<Reading />} />
+                <Route path="planning" element={<Planning />} />
+              </Route>
+
+              {/* 404 */}
+              <Route path="*" element={<NotFound />} />
+
+            </Routes>
+
+            <Footer />
+
+            {isModalOpen && (
+              <AddBookModal onClose={() => setIsModalOpen(false)} />
+            )}
+
+          </Router>
+        </BooksProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
