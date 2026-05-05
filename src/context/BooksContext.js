@@ -15,15 +15,10 @@ export const BooksContext = createContext();
 export function BooksProvider({ children }) {
   const [books, setBooks] = useState([]);
 
-  // ======================
-  // UI STATES (FOR GRADING)
-  // ======================
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ======================
-  // FETCH BOOKS
-  // ======================
+
   const fetchBooks = async () => {
     try {
       setLoading(true);
@@ -43,9 +38,6 @@ export function BooksProvider({ children }) {
     fetchBooks();
   }, []);
 
-  // ======================
-  // CREATE BOOK
-  // ======================
   const addBook = async ({ title, author, genre }) => {
     try {
       const newBook = {
@@ -60,7 +52,7 @@ export function BooksProvider({ children }) {
         format: "",
         note: "",
         rating: 0,
-        coverImage: null,
+        coverImage: "",
       };
 
       const created = await createBook(newBook);
@@ -74,15 +66,13 @@ export function BooksProvider({ children }) {
     }
   };
 
-  // ======================
-  // UPDATE STATUS
-  // ======================
   const updateStatus = async (id, status) => {
     try {
       const book = books.find((b) => b.id === id);
       if (!book) return;
 
       const updatedBook = updateStatusLogic(book, status);
+
       const result = await updateBookById(id, updatedBook);
 
       setBooks((prev) =>
@@ -96,9 +86,7 @@ export function BooksProvider({ children }) {
     }
   };
 
-  // ======================
-  // UPDATE BOOK
-  // ======================
+ 
   const updateBook = async (id, data) => {
     try {
       const result = await updateBookById(id, data);
@@ -114,25 +102,21 @@ export function BooksProvider({ children }) {
     }
   };
 
-  // ======================
-  // DELETE BOOK
-  // ======================
+
   const deleteBook = async (id) => {
     try {
       await deleteBookById(id);
 
       setBooks((prev) => prev.filter((b) => b.id !== id));
 
-      notify("Book deleted", "info");
+      notify("Book deleted", "success");
     } catch (err) {
       setError("Failed to delete book");
       notify("Failed to delete book", "error");
     }
   };
 
-  // ======================
-  // DERIVED STATE
-  // ======================
+ 
   const isEmpty = !loading && books.length === 0;
 
   return (
@@ -140,18 +124,15 @@ export function BooksProvider({ children }) {
       value={{
         books,
 
-        // states (IMPORTANT FOR GRADING)
         loading,
         error,
         isEmpty,
 
-        // actions (CRUD)
         addBook,
         updateStatus,
         updateBook,
         deleteBook,
 
-        // optional refresh
         fetchBooks,
       }}
     >

@@ -1,17 +1,25 @@
 import React, { useContext, useMemo } from "react";
 import { BooksContext } from "../context/BooksContext";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, CartesianGrid
 } from "recharts";
 
 function BooksBarChart() {
   const { books = [] } = useContext(BooksContext);
+
+  // читаем CSS переменную для цвета текста осей
+  const tickColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--text-muted").trim() || "#6b8cad";
+
+  const gridColor = getComputedStyle(document.documentElement)
+    .getPropertyValue("--border").trim() || "#2a3f5f";
+
+  const tooltipBg = getComputedStyle(document.documentElement)
+    .getPropertyValue("--bg-secondary").trim() || "#1b2a41";
+
+  const tooltipText = getComputedStyle(document.documentElement)
+    .getPropertyValue("--text-primary").trim() || "#fff";
 
   const data = useMemo(() => {
     const months = [
@@ -39,38 +47,37 @@ function BooksBarChart() {
     <div style={{ width: "100%", height: "100%" }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-          {/* Добавляем легкую сетку для профессионального вида */}
-          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-          
-          <XAxis 
-            dataKey="month" 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
+          <CartesianGrid
+            strokeDasharray="3 3"
+            vertical={false}
+            stroke={gridColor}
+          />
+          <XAxis
+            dataKey="month"
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: tickColor, fontSize: 12 }}
             dy={10}
           />
-          
-          <YAxis 
-            axisLine={false} 
-            tickLine={false} 
-            tick={{ fill: "rgba(255,255,255,0.5)", fontSize: 12 }}
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tick={{ fill: tickColor, fontSize: 12 }}
           />
-          
-          <Tooltip 
-            cursor={{ fill: "rgba(255,255,255,0.05)" }}
-            contentStyle={{ 
-              backgroundColor: "#1b2a41", 
-              border: "none", 
-              borderRadius: "8px", 
-              color: "#fff",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.5)"
+          <Tooltip
+            cursor={{ fill: "rgba(0,0,0,0.05)" }}
+            contentStyle={{
+              backgroundColor: tooltipBg,
+              border: "none",
+              borderRadius: "8px",
+              color: tooltipText,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.3)"
             }}
             itemStyle={{ color: "#5bc0de" }}
           />
-
           <Bar
             dataKey="books"
-            fill="#5bc0de" // Цвет теперь совпадает с круговой диаграммой
+            fill="#5bc0de"
             radius={[4, 4, 0, 0]}
             barSize={30}
           />

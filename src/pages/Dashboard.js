@@ -8,14 +8,13 @@ function Dashboard() {
     <div
       style={{
         padding: "30px",
-        background: "#0f1b2d",
+        background: "var(--bg-primary)",
         minHeight: "100vh",
-        color: "#fff",
+        color: "var(--text-primary)",
         display: "flex",
-        justifyContent: "center", // 👈 центрируем весь блок
+        justifyContent: "center",
       }}
     >
-      {/* MAIN WRAPPER (чтобы календарь был по центру) */}
       <div
         style={{
           width: "100%",
@@ -24,22 +23,23 @@ function Dashboard() {
           gap: "25px",
         }}
       >
-        {/* LEFT - CALENDAR */}
+        {/* КАЛЕНДАРЬ */}
         <div
           style={{
             flex: 2,
-            background: "#1b2a41",
+            background: "var(--bg-secondary)",
             padding: "25px",
             borderRadius: "18px",
+            boxShadow: "0 8px 25px var(--shadow)",
           }}
         >
-          {/* BIG TITLE */}
           <h1
             style={{
               marginBottom: "20px",
               fontSize: "28px",
               fontWeight: "500",
               letterSpacing: "1px",
+              color: "var(--text-primary)",
             }}
           >
             Reading Calendar
@@ -50,56 +50,53 @@ function Dashboard() {
           </div>
         </div>
 
-        {/* RIGHT - NETFLIX STYLE BOOK CARD */}
+        {/* ДЕТАЛИ КНИГИ */}
         <div
           style={{
             flex: 1,
-            background: "#1b2a41",
+            background: "var(--bg-secondary)",
             borderRadius: "18px",
             padding: "20px",
             minHeight: "650px",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            boxShadow: "0 8px 25px var(--shadow)",
           }}
         >
           {!selectedBook ? (
-            <p style={{ opacity: 0.6, textAlign: "center" }}>
+            <p style={{ color: "var(--text-muted)", textAlign: "center" }}>
               Click a book in calendar
             </p>
           ) : (
             <div>
-              {/* BIG NETFLIX COVER */}
               {selectedBook?.coverImage && (
                 <img
                   src={selectedBook.coverImage}
                   alt={selectedBook.title}
                   style={{
                     width: "100%",
-                    height: "420px", // 🔥 ВАЖНО: высокий формат как Netflix
+                    height: "420px",
                     objectFit: "cover",
                     borderRadius: "16px",
                     marginBottom: "15px",
-                    boxShadow: "0 10px 25px rgba(0,0,0,0.4)",
+                    boxShadow: "0 10px 25px var(--shadow)",
                   }}
                 />
               )}
 
-              {/* TITLE */}
-              <h2 style={{ color: "#f6d1b1", marginBottom: "10px" }}>
+              <h2 style={{ color: "var(--accent)", marginBottom: "10px" }}>
                 {selectedBook?.title}
               </h2>
 
-              {/* AUTHOR + GENRE */}
-              <p style={{ margin: "4px 0", opacity: 0.85 }}>
+              <p style={{ margin: "4px 0", color: "var(--text-secondary)" }}>
                 <b>Author:</b> {selectedBook?.author}
               </p>
 
-              <p style={{ margin: "4px 0", opacity: 0.85 }}>
+              <p style={{ margin: "4px 0", color: "var(--text-secondary)" }}>
                 <b>Genre:</b> {selectedBook?.genre}
               </p>
 
-              {/* DATES */}
               {selectedBook?.startDate && (
                 <p style={{ marginTop: "10px", color: "#5bc0de" }}>
                   <b>Started:</b>{" "}

@@ -1,60 +1,52 @@
 import React, { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 
 function Navbar({ openAddModal, logout, isAuth }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useContext(ThemeContext);
 
-  const goProfile = () => {
-    navigate("/profile"); // лучше чем "/" (чтобы не путать с auth redirect)
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
     <nav className="navbar">
 
-      {/* LOGO */}
+      {}
       <div className="logo">
         <h1>📚 Bookly</h1>
       </div>
 
-      {/* LINKS */}
-      <div className="nav-links">
+      {}
+      <div className="nav-center">
+        <Link to="/home" className={`nav-link ${isActive("/home") ? "nav-link-active" : ""}`}>
+          Home
+        </Link>
+        <Link to="/stats" className={`nav-link ${isActive("/stats") ? "nav-link-active" : ""}`}>
+          Stats
+        </Link>
+        <Link to="/dashboard" className={`nav-link ${isActive("/dashboard") ? "nav-link-active" : ""}`}>
+          Calendar
+        </Link>
+      </div>
 
-        {/* ADD BOOK */}
+      {}
+      <div className="nav-actions">
+
         <button onClick={openAddModal} className="add-book-btn">
           + Add Book
         </button>
 
-        <span>|</span>
-
-        <Link to="/home">Home</Link>
-        <span>|</span>
-
-        <Link to="/stats">Stats</Link>
-        <span>|</span>
-
-        <Link to="/dashboard">Calendar</Link>
-
-        <span>|</span>
-
-        {/* THEME TOGGLE */}
         <button onClick={toggleTheme} className="theme-btn">
           {theme === "light" ? "🌙" : "☀️"}
         </button>
 
-        <span>|</span>
-
-        {/* PROFILE */}
-        <button onClick={goProfile} className="profile-btn">
+        <button onClick={() => navigate("/profile")} className="nav-icon-btn" title="Profile">
           👤
         </button>
 
-        <span>|</span>
-
-        {/* LOGOUT */}
         {isAuth && (
-          <button onClick={logout} className="logout-btn">
+          <button onClick={logout} className="nav-logout-btn">
             Logout
           </button>
         )}

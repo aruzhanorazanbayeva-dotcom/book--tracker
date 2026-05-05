@@ -6,7 +6,6 @@ import "react-calendar/dist/Calendar.css";
 function BooksCalendar({ onSelectBook }) {
   const { books } = useContext(BooksContext);
 
-  // Группировка только прочитанных книг по дате
   const map = useMemo(() => {
     const m = {};
     books
@@ -19,12 +18,10 @@ function BooksCalendar({ onSelectBook }) {
     return m;
   }, [books]);
 
-  // Контент для ячеек календаря (мини-обложки)
   const tileContent = ({ date, view }) => {
     if (view !== "month") return null;
     const key = date.toISOString().split("T")[0];
     const items = map[key];
-
     if (!items) return null;
 
     return (
@@ -33,10 +30,7 @@ function BooksCalendar({ onSelectBook }) {
           <img
             key={book.id}
             src={book.coverImage}
-            onClick={(e) => {
-              e.stopPropagation(); // Чтобы не срабатывал клик по дате календаря
-              onSelectBook(book);
-            }}
+            onClick={(e) => { e.stopPropagation(); onSelectBook(book); }}
             style={{
               width: "28px",
               height: "40px",
@@ -59,71 +53,75 @@ function BooksCalendar({ onSelectBook }) {
   return (
     <div className="calendar-container" style={{ width: "100%", maxWidth: "500px" }}>
       <style>{`
-        /* Основной фон календаря */
         .react-calendar {
-          background: linear-gradient(145deg, #1b2a41, #162235) !important;
-          border: none !important;
+          background: var(--bg-secondary) !important;
+          border: 1px solid var(--border) !important;
           border-radius: 20px !important;
-          color: white !important;
+          color: var(--text-primary) !important;
           padding: 15px !important;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+          box-shadow: 0 10px 30px var(--shadow) !important;
           font-family: 'Inter', sans-serif !important;
           width: 100% !important;
         }
 
-        /* Навигация (месяц/год) */
         .react-calendar__navigation button {
-          color: #5bc0de !important;
+          color: var(--accent) !important;
           font-size: 18px !important;
           font-weight: bold !important;
+          background: transparent !important;
         }
+
         .react-calendar__navigation button:enabled:hover,
         .react-calendar__navigation button:enabled:focus {
-          background-color: rgba(255, 255, 255, 0.05) !important;
+          background-color: var(--bg-card) !important;
           border-radius: 10px !important;
         }
 
-        /* Дни недели */
         .react-calendar__month-view__weekdays__weekday {
-          color: rgba(255, 255, 255, 0.5) !important;
+          color: var(--text-muted) !important;
           text-decoration: none !important;
           text-transform: uppercase !important;
           font-size: 12px !important;
         }
 
-        /* Ячейки чисел */
+        .react-calendar__month-view__weekdays__weekday abbr {
+          text-decoration: none !important;
+        }
+
         .react-calendar__tile {
-          color: white !important;
+          color: var(--text-primary) !important;
           padding: 15px 5px !important;
-          height: 100px !important; /* Увеличили высоту для обложек */
+          height: 100px !important;
           display: flex !important;
           flex-direction: column !important;
           align-items: center !important;
           justify-content: flex-start !important;
           border-radius: 10px !important;
+          background: transparent !important;
         }
 
-        /* Эффект при наведении на день */
         .react-calendar__tile:enabled:hover,
         .react-calendar__tile:enabled:focus {
-          background-color: rgba(255, 255, 255, 0.05) !important;
+          background-color: var(--bg-card) !important;
         }
 
-        /* Текущий выбранный день */
         .react-calendar__tile--active {
           background: #5bc0de !important;
-          color: black !important;
+          color: var(--bg-primary) !important;
         }
 
-        /* Сегодняшний день */
         .react-calendar__tile--now {
-          background: rgba(91, 192, 222, 0.2) !important;
-          border: 1px solid #5bc0de !important;
+          background: var(--bg-card) !important;
+          border: 1px solid var(--accent) !important;
         }
 
-        /* Соседние месяцы */
         .react-calendar__month-view__days__day--neighboringMonth {
-          opacity: 0.2 !important;
+          opacity: 0.3 !important;
+          color: var(--text-muted) !important;
+        }
+
+        .react-calendar__month-view__days__day--weekend {
+          color: var(--accent) !important;
         }
       `}</style>
 

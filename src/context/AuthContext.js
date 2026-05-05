@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 
 export const AuthContext = createContext();
 
@@ -6,7 +6,6 @@ export function AuthProvider({ children }) {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // восстановление после reload
   useEffect(() => {
     const auth = localStorage.getItem("auth") === "true";
     setIsAuth(auth);

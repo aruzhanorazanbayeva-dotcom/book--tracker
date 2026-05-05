@@ -2,7 +2,7 @@ import React from "react";
 import BookCard from "./BookCard";
 
 function BookList({ books, onDelete, onStatusChange }) {
-  console.log("BookList render"); // можно удалить, это только для проверки
+  console.log("BookList render");
 
   return (
     <div className="book-list">
@@ -18,6 +18,7 @@ function BookList({ books, onDelete, onStatusChange }) {
             genre={book.genre}
             status={book.status}
             coverImage={book.coverImage}
+            rating={book.rating}
             onStatusChange={onStatusChange}
             onDelete={onDelete}
           />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import Reading from "./pages/Reading";
 import Planning from "./pages/Planning";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -21,7 +22,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import { ThemeProvider } from "./context/ThemeContext";
 import { BooksProvider } from "./context/BooksContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,14 +33,22 @@ function App() {
         <BooksProvider>
           <Router>
 
-            <Navbar openAddModal={() => setIsModalOpen(true)} />
+            <AuthContext.Consumer>
+              {({ isAuth, logout }) => (
+                <Navbar
+                  openAddModal={() => setIsModalOpen(true)}
+                  isAuth={isAuth}
+                  logout={logout}
+                />
+              )}
+            </AuthContext.Consumer>
 
             <Routes>
 
               {/* PUBLIC */}
               <Route path="/" element={<Landing />} />
 
-              {/* PROTECTED ROUTES */}
+              {/* PROTECTED */}
               <Route
                 path="/home"
                 element={
@@ -78,6 +87,16 @@ function App() {
                 <Route path="reading" element={<Reading />} />
                 <Route path="planning" element={<Planning />} />
               </Route>
+
+              {/* PROFILE */}
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
 
               {/* 404 */}
               <Route path="*" element={<NotFound />} />

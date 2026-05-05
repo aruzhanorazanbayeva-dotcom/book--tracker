@@ -20,7 +20,6 @@ export const notify = (message, type = "success") => {
   
     el.className = `toast toast-${type}`;
   
-    // центр экрана + цвет
     el.style.position = "fixed";
     el.style.top = "50%";
     el.style.left = "50%";
@@ -39,7 +38,6 @@ export const notify = (message, type = "success") => {
   
     document.body.appendChild(el);
   
-    // появление
     requestAnimationFrame(() => {
       el.style.opacity = "1";
       el.style.transform = "translate(-50%, -50%) scale(1.05)";

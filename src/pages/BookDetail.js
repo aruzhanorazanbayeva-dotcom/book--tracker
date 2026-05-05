@@ -29,34 +29,40 @@ function BookDetail() {
     setForm((prev) => ({ ...prev, rating: value }));
   };
 
-  // 📖 START
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setForm((prev) => ({ ...prev, coverImage: reader.result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const startReading = () => {
     const now = new Date().toISOString();
-
-    const updated = {
-      ...form,
-      startDate: now,
-      status: "Reading",
-    };
-
+    const updated = { ...form, startDate: now, status: "Reading" };
     setForm(updated);
     updateBook(book.id, updated);
     setMessage(`Started: ${new Date(now).toLocaleDateString()}`);
   };
 
-  // 🏁 FINISH
   const finishReading = () => {
     const now = new Date().toISOString();
-
-    const updated = {
-      ...form,
-      finishDate: now,
-      status: "Finished",
-    };
-
+    const updated = { ...form, finishDate: now, status: "Finished" };
     setForm(updated);
     updateBook(book.id, updated);
     setMessage(`Finished: ${new Date(now).toLocaleDateString()}`);
+  };
+
+  const resetStartDate = () => {
+    setForm((prev) => ({ ...prev, startDate: null, status: "Planning" }));
+    setMessage("");
+  };
+
+  const resetFinishDate = () => {
+    setForm((prev) => ({ ...prev, finishDate: null, status: "Reading" }));
+    setMessage("");
   };
 
   const saveBook = () => {
@@ -90,105 +96,86 @@ function BookDetail() {
           </div>
 
           {form.coverImage ? (
-            <img
-              src={form.coverImage}
-              alt={form.title}
-              className="detail-image"
-            />
+            <img src={form.coverImage} alt={form.title} className="detail-image" />
           ) : (
             <div className="no-image">No Image</div>
           )}
+
+          <div style={{ marginTop: "15px" }}>
+            <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
+              Upload cover image
+            </label>
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+          </div>
         </div>
 
         {/* RIGHT */}
         <div className="detail-right">
 
-          <p><b>Author:</b> {form.author}</p>
-          <p><b>Genre:</b> {form.genre}</p>
+          <p className="meta"><b>Author:</b> {form.author}</p>
+          <p className="meta"><b>Genre:</b> {form.genre}</p>
 
-          {/* START / FINISH BUTTONS */}
+          {/* Reading actions */}
           <div className="reading-actions">
 
-            <button
-              className={`btn-start ${form.startDate ? "active-start" : ""}`}
-              onClick={startReading}
-              disabled={!!form.startDate}
-            >
-              Start reading
-            </button>
+            <div className="action-row">
+              <button
+                className={`btn-action ${form.startDate ? "btn-active-start" : "btn-inactive"}`}
+                onClick={startReading}
+                disabled={!!form.startDate}
+              >
+                📖 Start reading
+              </button>
+              {form.startDate && (
+                <button className="btn-reset" onClick={resetStartDate} title="Reset start date">
+                  ✕
+                </button>
+              )}
+            </div>
 
-            <button
-              className={`btn-finish ${form.finishDate ? "active-finish" : ""}`}
-              onClick={finishReading}
-              disabled={!form.startDate || !!form.finishDate}
-            >
-              Finish reading
-            </button>
+            <div className="action-row">
+              <button
+                className={`btn-action ${form.finishDate ? "btn-active-finish" : "btn-inactive"}`}
+                onClick={finishReading}
+                disabled={!form.startDate || !!form.finishDate}
+              >
+                ✅ Finish reading
+              </button>
+              {form.finishDate && (
+                <button className="btn-reset" onClick={resetFinishDate} title="Reset finish date">
+                  ✕
+                </button>
+              )}
+            </div>
 
           </div>
 
-          {/* START DATE */}
+          {/* Dates */}
           <input
             type="date"
-            value={
-              form.startDate
-                ? form.startDate.split("T")[0]
-                : ""
-            }
+            value={form.startDate ? form.startDate.split("T")[0] : ""}
             onChange={(e) =>
               setForm((prev) => ({
                 ...prev,
                 startDate: new Date(e.target.value).toISOString(),
               }))
             }
-            style={{
-              marginTop: "8px",
-              padding: "6px",
-              borderRadius: "8px",
-              border: "1px solid #c9a27c",
-              background: "#f6f1ea",
-              color: "#1b2a41"
-            }}
           />
 
-          {/* FINISH DATE */}
           <input
             type="date"
-            value={
-              form.finishDate
-                ? form.finishDate.split("T")[0]
-                : ""
-            }
+            value={form.finishDate ? form.finishDate.split("T")[0] : ""}
             onChange={(e) =>
               setForm((prev) => ({
                 ...prev,
                 finishDate: new Date(e.target.value).toISOString(),
               }))
             }
-            style={{
-              marginTop: "6px",
-              padding: "6px",
-              borderRadius: "8px",
-              border: "1px solid #8f7a6a",
-              background: "#f6f1ea",
-              color: "#1b2a41"
-            }}
           />
 
-          {/* MESSAGE */}
-          {message && (
-            <div
-              style={{
-                marginTop: "10px",
-                fontSize: "13px",
-                color: "#8f7a6a"
-              }}
-            >
-              {message}
-            </div>
-          )}
+          {message && <div className="detail-message">{message}</div>}
 
-          {/* PROGRESS */}
+          {/* Pages */}
           <input
             name="totalPages"
             value={form.totalPages || ""}
@@ -203,27 +190,20 @@ function BookDetail() {
             placeholder="Pages read"
           />
 
-          <p>Progress: {progress}%</p>
+          <p className="progress-title">Progress: {progress}%</p>
 
           <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
 
-          {/* FORMAT */}
-          <select
-            name="format"
-            value={form.format || ""}
-            onChange={handleChange}
-          >
+          {/* Format */}
+          <select name="format" value={form.format || ""} onChange={handleChange}>
             <option value="">Select format</option>
             <option value="online">Online</option>
             <option value="paper">Paper</option>
           </select>
 
-          {/* NOTE */}
+          {/* Notes */}
           <textarea
             name="note"
             value={form.note || ""}
@@ -231,7 +211,7 @@ function BookDetail() {
             placeholder="Write notes..."
           />
 
-          {/* SAVE */}
+          {/* Save */}
           <button className="save-btn" onClick={saveBook}>
             Save Changes
           </button>

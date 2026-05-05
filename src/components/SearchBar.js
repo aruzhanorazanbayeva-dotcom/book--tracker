@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 function SearchBar({ search, setSearch }) {
   const inputRef = useRef(null);
 
-  // автофокус при загрузке страницы
+ 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
