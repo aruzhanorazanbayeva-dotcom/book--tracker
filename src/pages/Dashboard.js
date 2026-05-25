@@ -7,7 +7,7 @@ function Dashboard() {
   return (
     <div
       style={{
-        padding: "30px",
+        padding: "20px", 
         background: "var(--bg-primary)",
         minHeight: "100vh",
         color: "var(--text-primary)",
@@ -21,16 +21,18 @@ function Dashboard() {
           maxWidth: "1200px",
           display: "flex",
           gap: "25px",
+          flexWrap: "wrap", 
         }}
       >
-        {/* КАЛЕНДАРЬ */}
+        {}
         <div
           style={{
-            flex: 2,
+            flex: "1 1 600px", 
             background: "var(--bg-secondary)",
             padding: "25px",
             borderRadius: "18px",
             boxShadow: "0 8px 25px var(--shadow)",
+            minWidth: "280px", 
           }}
         >
           <h1
@@ -45,23 +47,24 @@ function Dashboard() {
             Reading Calendar
           </h1>
 
-          <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
             <BooksCalendar onSelectBook={setSelectedBook} />
           </div>
         </div>
 
-        {/* ДЕТАЛИ КНИГИ */}
+        {}
         <div
           style={{
-            flex: 1,
+            flex: "1 1 350px", 
             background: "var(--bg-secondary)",
             borderRadius: "18px",
             padding: "20px",
-            minHeight: "650px",
+            minHeight: "450px", 
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             boxShadow: "0 8px 25px var(--shadow)",
+            minWidth: "280px",
           }}
         >
           {!selectedBook ? (
@@ -76,7 +79,8 @@ function Dashboard() {
                   alt={selectedBook.title}
                   style={{
                     width: "100%",
-                    height: "420px",
+                    height: "auto", 
+                    maxHeight: "420px",
                     objectFit: "cover",
                     borderRadius: "16px",
                     marginBottom: "15px",

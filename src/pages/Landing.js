@@ -13,7 +13,7 @@ function Landing() {
   const handleSignIn = (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
-      setError("Заполни все поля");
+      setError("Please fill in all fields");
       return;
     }
     localStorage.setItem("user", JSON.stringify({ name, email }));
@@ -42,7 +42,7 @@ function Landing() {
         boxShadow: "0 30px 80px rgba(0,0,0,0.5)"
       }}>
 
-        {/* ЛЕВАЯ СТОРОНА — декоративная */}
+        {}
         <div style={{
           flex: 1,
           background: "linear-gradient(160deg, #1b2a41 0%, #0f172a 100%)",
@@ -56,7 +56,6 @@ function Landing() {
           overflow: "hidden"
         }}>
 
-          {/* фоновое свечение */}
           <div style={{
             position: "absolute",
             width: "300px",
@@ -95,7 +94,6 @@ function Landing() {
             Your personal library. Track books, rate them, and monitor your progress.
           </p>
 
-          {/* декоративные книги */}
           <div style={{
             display: "flex",
             gap: "10px",
@@ -114,7 +112,7 @@ function Landing() {
           </div>
         </div>
 
-        {/* ПРАВАЯ СТОРОНА — форма */}
+        {}
         <div style={{
           flex: 1,
           background: "#1b2a41",
@@ -145,7 +143,7 @@ function Landing() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               <label style={{ color: "#a0b4c8", fontSize: "13px", fontWeight: 600 }}>
-              Name
+                Name
               </label>
               <input
                 placeholder="What’s your name?"
@@ -168,7 +166,7 @@ function Landing() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
               <label style={{ color: "#a0b4c8", fontSize: "13px", fontWeight: 600 }}>
-              Email
+                Email
               </label>
               <input
                 placeholder="your@email.com"
@@ -214,7 +212,7 @@ function Landing() {
               onMouseEnter={e => e.currentTarget.style.transform = "translateY(-2px)"}
               onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
             >
-              Войти →
+              Sign In →
             </button>
 
           </form>

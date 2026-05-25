@@ -79,7 +79,7 @@ function BookDetail() {
     <div className="detail-container">
       <div className="detail-card">
 
-        {/* LEFT */}
+        {}
         <div className="detail-left">
           <h1 className="detail-title">{form.title}</h1>
 
@@ -101,21 +101,19 @@ function BookDetail() {
             <div className="no-image">No Image</div>
           )}
 
-          <div style={{ marginTop: "15px" }}>
-            <label style={{ fontWeight: "bold", display: "block", marginBottom: "5px" }}>
-              Upload cover image
-            </label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-          </div>
+          {}
+          <label className="upload-cover-btn">
+            📷 Upload cover
+            <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: "none" }} />
+          </label>
         </div>
 
-        {/* RIGHT */}
+        {}
         <div className="detail-right">
 
           <p className="meta"><b>Author:</b> {form.author}</p>
           <p className="meta"><b>Genre:</b> {form.genre}</p>
 
-          {/* Reading actions */}
           <div className="reading-actions">
 
             <div className="action-row">
@@ -150,7 +148,6 @@ function BookDetail() {
 
           </div>
 
-          {/* Dates */}
           <input
             type="date"
             value={form.startDate ? form.startDate.split("T")[0] : ""}
@@ -175,7 +172,6 @@ function BookDetail() {
 
           {message && <div className="detail-message">{message}</div>}
 
-          {/* Pages */}
           <input
             name="totalPages"
             value={form.totalPages || ""}
@@ -196,14 +192,12 @@ function BookDetail() {
             <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
 
-          {/* Format */}
           <select name="format" value={form.format || ""} onChange={handleChange}>
             <option value="">Select format</option>
             <option value="online">Online</option>
             <option value="paper">Paper</option>
           </select>
 
-          {/* Notes */}
           <textarea
             name="note"
             value={form.note || ""}
@@ -211,7 +205,6 @@ function BookDetail() {
             placeholder="Write notes..."
           />
 
-          {/* Save */}
           <button className="save-btn" onClick={saveBook}>
             Save Changes
           </button>

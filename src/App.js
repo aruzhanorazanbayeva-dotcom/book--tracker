@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -10,10 +10,12 @@ import Home from "./pages/Home";
 import Stats from "./pages/Stats";
 import BookDetail from "./pages/BookDetail";
 import Dashboard from "./pages/Dashboard";
-import Reading from "./pages/Reading";
-import Planning from "./pages/Planning";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
+import ProfileOverview from "./pages/ProfileOverview";
+import ProfileAchievements from "./pages/ProfileAchievements";
+import ProfileHistory from "./pages/ProfileHistory";
+import ProfileSettings from "./pages/ProfileSettings";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -45,10 +47,8 @@ function App() {
 
             <Routes>
 
-              {/* PUBLIC */}
               <Route path="/" element={<Landing />} />
 
-              {/* PROTECTED */}
               <Route
                 path="/home"
                 element={
@@ -83,12 +83,9 @@ function App() {
                     <Dashboard />
                   </ProtectedRoute>
                 }
-              >
-                <Route path="reading" element={<Reading />} />
-                <Route path="planning" element={<Planning />} />
-              </Route>
+              />
 
-              {/* PROFILE */}
+              {}
               <Route
                 path="/profile"
                 element={
@@ -96,9 +93,13 @@ function App() {
                     <Profile />
                   </ProtectedRoute>
                 }
-              />
+              >
+                <Route index element={<ProfileOverview />} />
+                <Route path="achievements" element={<ProfileAchievements />} />
+                <Route path="history" element={<ProfileHistory />} />
+                <Route path="settings" element={<ProfileSettings />} />
+              </Route>
 
-              {/* 404 */}
               <Route path="*" element={<NotFound />} />
 
             </Routes>

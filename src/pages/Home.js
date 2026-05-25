@@ -3,6 +3,7 @@ import React, {
   useContext,
   useMemo,
   useCallback,
+  useEffect,
 } from "react";
 
 import EmptyState from "../components/EmptyState";
@@ -18,6 +19,14 @@ function Home() {
   const [search, setSearch] = useState("");
   const [genre, setGenre] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const debouncedSearch = useDebounce(search, 400);
 
@@ -80,64 +89,18 @@ function Home() {
   }
 
   return (
-    <div style={{
-      display: "flex",
-      minHeight: "calc(100vh - 64px)",
-      background: "var(--bg-primary)"
-    }}>
+    <div className="home-wrapper">
 
-      {/* ===== SIDEBAR ===== */}
-      <aside style={{
-        width: "220px",
-        flexShrink: 0,
-        background: "var(--bg-secondary)",
-        padding: "24px 16px",
-        display: "flex",
-        flexDirection: "column",
-        gap: "28px",
-        borderRight: "1px solid var(--border)",
-        position: "sticky",
-        top: "64px",
-        height: "calc(100vh - 64px)",
-        overflowY: "auto"
-      }}>
-
-        {/* ЖАНР */}
+      {}
+      <aside className="home-sidebar">
         <div>
-          <p style={{
-            margin: "0 0 12px 0",
-            color: "var(--text-muted)",
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "1.5px",
-            textTransform: "uppercase"
-          }}>
-            Жанр
-          </p>
+          <p className="home-sidebar-label">Genre</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {genreOptions.map((g) => (
               <button
                 key={g}
                 onClick={() => setGenre(g)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "8px 12px",
-                  borderRadius: "10px",
-                  border: "none",
-                  background: genre === g ? "var(--bg-card)" : "transparent",
-                  color: genre === g ? "var(--accent)" : "var(--text-muted)",
-                  fontSize: "13px",
-                  fontWeight: genre === g ? 700 : 400,
-                  cursor: "pointer",
-                  transition: "0.15s",
-                  textAlign: "left",
-                  width: "100%",
-                  borderLeft: genre === g ? "3px solid var(--accent)" : "3px solid transparent"
-                }}
-                onMouseEnter={e => { if (genre !== g) e.currentTarget.style.background = "var(--bg-card)"; }}
-                onMouseLeave={e => { if (genre !== g) e.currentTarget.style.background = "transparent"; }}
+                className={`home-sidebar-btn ${genre === g ? "active" : ""}`}
               >
                 <span style={{ fontSize: "16px" }}>{genreIcons[g]}</span>
                 <span>{g}</span>
@@ -146,45 +109,20 @@ function Home() {
           </div>
         </div>
 
-        {/* РАЗДЕЛИТЕЛЬ */}
-        <div style={{ height: "1px", background: "var(--border)" }} />
+        <div className="home-sidebar-divider" />
 
-        {/* СТАТУС */}
         <div>
-          <p style={{
-            margin: "0 0 12px 0",
-            color: "var(--text-muted)",
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "1.5px",
-            textTransform: "uppercase"
-          }}>
-            Статус
-          </p>
+          <p className="home-sidebar-label">Status</p>
           <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
             {statusOptions.map((s) => (
               <button
                 key={s}
                 onClick={() => setStatusFilter(s)}
+                className={`home-sidebar-btn ${statusFilter === s ? "active" : ""}`}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "10px",
-                  padding: "8px 12px",
-                  borderRadius: "10px",
-                  border: "none",
-                  background: statusFilter === s ? "var(--bg-card)" : "transparent",
-                  color: statusFilter === s ? statusColors[s] : "var(--text-muted)",
-                  fontSize: "13px",
-                  fontWeight: statusFilter === s ? 700 : 400,
-                  cursor: "pointer",
-                  transition: "0.15s",
-                  textAlign: "left",
-                  width: "100%",
-                  borderLeft: statusFilter === s ? `3px solid ${statusColors[s]}` : "3px solid transparent"
+                  color: statusFilter === s ? statusColors[s] : undefined,
+                  borderLeft: statusFilter === s ? `3px solid ${statusColors[s]}` : undefined,
                 }}
-                onMouseEnter={e => { if (statusFilter !== s) e.currentTarget.style.background = "var(--bg-card)"; }}
-                onMouseLeave={e => { if (statusFilter !== s) e.currentTarget.style.background = "transparent"; }}
               >
                 <span style={{ fontSize: "16px" }}>{statusIcons[s]}</span>
                 <span>{s}</span>
@@ -193,31 +131,46 @@ function Home() {
           </div>
         </div>
 
-        {/* СБРОС */}
         {(genre !== "All" || statusFilter !== "All") && (
           <button
+            className="home-sidebar-reset"
             onClick={() => { setGenre("All"); setStatusFilter("All"); }}
-            style={{
-              padding: "8px",
-              borderRadius: "10px",
-              border: "1px solid var(--border)",
-              background: "transparent",
-              color: "#e05757",
-              fontSize: "12px",
-              cursor: "pointer",
-              transition: "0.15s"
-            }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#e05757"}
-            onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}
           >
-            ✕ Сбросить фильтры
+            ✕ Reset filters
           </button>
         )}
-
       </aside>
 
-      {/* ===== КОНТЕНТ ===== */}
-      <main style={{ flex: 1, padding: "24px 28px", overflowY: "auto", background: "var(--bg-primary)" }}>
+      {}
+      {isMobile && (
+        <div style={{ width: "100%", overflow: "hidden", flexShrink: 0 }}>
+          <div className="home-filters-mobile">
+            {genreOptions.map((g) => (
+              <button
+                key={g}
+                className={genre === g ? "active" : ""}
+                onClick={() => setGenre(g)}
+              >
+                {genreIcons[g]} {g}
+              </button>
+            ))}
+          </div>
+          <div className="home-filters-mobile">
+            {statusOptions.map((s) => (
+              <button
+                key={s}
+                className={statusFilter === s ? "active" : ""}
+                onClick={() => setStatusFilter(s)}
+              >
+                {statusIcons[s]} {s}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {}
+      <main className="home-main">
 
         <SearchBar search={search} setSearch={setSearch} />
 
@@ -235,100 +188,72 @@ function Home() {
 
       </main>
 
-      {/* CURRENTLY READING ВИДЖЕТ */}
+      {}
       {currentlyReading && (
-        <Link to={`/book/${currentlyReading.id}`} style={{ textDecoration: "none" }}>
-          <div
-            style={{
-              position: "fixed",
-              right: "20px",
-              bottom: "70px",
-              width: "300px",
-              background: "var(--bg-secondary)",
-              borderRadius: "18px",
-              padding: "18px",
-              boxShadow: "0 8px 30px var(--shadow)",
-              border: "1px solid var(--border)",
-              cursor: "pointer",
-              transition: "0.2s",
-            }}
-            onMouseEnter={e => e.currentTarget.style.transform = "translateY(-3px)"}
-            onMouseLeave={e => e.currentTarget.style.transform = "translateY(0)"}
-          >
-            <div style={{
-              fontSize: "11px",
-              color: "#5bc0de",
-              fontWeight: "bold",
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              marginBottom: "12px",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px"
-            }}>
-              <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#5bc0de", display: "inline-block" }} />
-              Currently Reading
-            </div>
+        <Link to={`/book/${currentlyReading.id}`} className="currently-reading-card">
+          <div style={{
+            fontSize: "11px",
+            color: "#5bc0de",
+            fontWeight: "bold",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            marginBottom: "12px",
+            display: "flex",
+            alignItems: "center",
+            gap: "6px"
+          }}>
+            <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#5bc0de", display: "inline-block" }} />
+            Currently Reading
+          </div>
 
-            <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
-              {currentlyReading.coverImage ? (
-                <img
-                  src={currentlyReading.coverImage}
-                  alt={currentlyReading.title}
-                  style={{ width: "70px", height: "100px", objectFit: "cover", borderRadius: "10px", flexShrink: 0, boxShadow: "0 4px 12px var(--shadow)" }}
-                />
-              ) : (
-                <div style={{ width: "70px", height: "100px", background: "var(--bg-card)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", flexShrink: 0 }}>
-                  📚
-                </div>
-              )}
-
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
-                <p style={{ margin: 0, color: "var(--accent)", fontWeight: "bold", fontSize: "15px", lineHeight: "1.3", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                  {currentlyReading.title}
-                </p>
-                <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)" }}>
-                  {currentlyReading.author}
-                </p>
-                {daysSinceStart !== null && (
-                  <p style={{ margin: 0, fontSize: "12px", color: "#5bc0de", fontWeight: 600 }}>
-                    День {daysSinceStart + 1}
-                  </p>
-                )}
-                {currentlyReading.readPages && currentlyReading.totalPages && (
-                  <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)" }}>
-                    {currentlyReading.readPages} / {currentlyReading.totalPages} стр.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {progress > 0 && (
-              <div style={{ marginTop: "14px" }}>
-                <div style={{ width: "100%", height: "5px", background: "var(--bg-input)", borderRadius: "4px", overflow: "hidden" }}>
-                  <div style={{ width: `${progress}%`, height: "100%", background: "linear-gradient(90deg, #5bc0de, #8b5e3c)", borderRadius: "4px", transition: "width 0.3s" }} />
-                </div>
-                <p style={{ margin: "5px 0 0 0", fontSize: "12px", color: "var(--text-muted)", textAlign: "right" }}>
-                  {progress}%
-                </p>
+          <div style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
+            {currentlyReading.coverImage ? (
+              <img
+                src={currentlyReading.coverImage}
+                alt={currentlyReading.title}
+                style={{ width: "70px", height: "100px", objectFit: "cover", borderRadius: "10px", flexShrink: 0, boxShadow: "0 4px 12px var(--shadow)" }}
+              />
+            ) : (
+              <div style={{ width: "70px", height: "100px", background: "var(--bg-card)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", flexShrink: 0 }}>
+                📚
               </div>
             )}
+
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "6px" }}>
+              <p style={{ margin: 0, color: "var(--accent)", fontWeight: "bold", fontSize: "15px", lineHeight: "1.3", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                {currentlyReading.title}
+              </p>
+              <p style={{ margin: 0, fontSize: "13px", color: "var(--text-secondary)" }}>
+                {currentlyReading.author}
+              </p>
+              {daysSinceStart !== null && (
+                <p style={{ margin: 0, fontSize: "12px", color: "#5bc0de", fontWeight: 600 }}>
+                  Day {daysSinceStart + 1}
+                </p>
+              )}
+              {currentlyReading.readPages && currentlyReading.totalPages && (
+                <p style={{ margin: 0, fontSize: "12px", color: "var(--text-muted)" }}>
+                  {currentlyReading.readPages} / {currentlyReading.totalPages} pages
+                </p>
+              )}
+            </div>
           </div>
+
+          {progress > 0 && (
+            <div style={{ marginTop: "14px" }}>
+              <div style={{ width: "100%", height: "5px", background: "var(--bg-input)", borderRadius: "4px", overflow: "hidden" }}>
+                <div style={{ width: `${progress}%`, height: "100%", background: "linear-gradient(90deg, #5bc0de, #8b5e3c)", borderRadius: "4px", transition: "width 0.3s" }} />
+              </div>
+              <p style={{ margin: "5px 0 0 0", fontSize: "12px", color: "var(--text-muted)", textAlign: "right" }}>
+                {progress}%
+              </p>
+            </div>
+          )}
         </Link>
       )}
 
-      {/* СЧЁТЧИК */}
-      <div style={{
-        position: "fixed",
-        right: "20px",
-        bottom: "20px",
-        background: "var(--accent-dark)",
-        color: "white",
-        padding: "10px 15px",
-        borderRadius: "12px",
-        fontSize: "14px",
-        fontWeight: 600
-      }}>
+      {}
+      <div className="total-books-counter">
         Total books: {books?.length || 0}
       </div>
 

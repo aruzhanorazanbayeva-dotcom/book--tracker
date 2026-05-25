@@ -127,7 +127,7 @@ function BooksCalendar({ onSelectBook }) {
 
       <Calendar
         tileContent={tileContent}
-        locale="ru-RU"
+        locale="en-US"
       />
     </div>
   );

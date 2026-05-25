@@ -23,7 +23,7 @@ function AddBookForm({ onAddBook, onClose }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim() || !author.trim()) {
-      setError("Заполни название и автора");
+      setError("Please fill in the title and author");
       return;
     }
     try {
@@ -43,7 +43,7 @@ function AddBookForm({ onAddBook, onClose }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
 
-      {/* ЗАГОЛОВОК */}
+      {}
       <div style={{
         padding: "24px 28px 16px 28px",
         borderBottom: "1px solid var(--border)"
@@ -61,7 +61,7 @@ function AddBookForm({ onAddBook, onClose }) {
         </p>
       </div>
 
-      {/* ФОРМА */}
+      {}
       <form onSubmit={handleSubmit} style={{
         padding: "20px 28px 24px 28px",
         display: "flex",
@@ -69,7 +69,7 @@ function AddBookForm({ onAddBook, onClose }) {
         gap: "16px"
       }}>
 
-        {/* НАЗВАНИЕ */}
+        {}
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <label style={{
             color: "var(--text-muted)",
@@ -78,7 +78,7 @@ function AddBookForm({ onAddBook, onClose }) {
             letterSpacing: "0.5px",
             textTransform: "uppercase"
           }}>
-            Название
+            Title
           </label>
           <input
             type="text"
@@ -100,7 +100,7 @@ function AddBookForm({ onAddBook, onClose }) {
           />
         </div>
 
-        {/* АВТОР */}
+        {}
         <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
           <label style={{
             color: "var(--text-muted)",
@@ -109,7 +109,7 @@ function AddBookForm({ onAddBook, onClose }) {
             letterSpacing: "0.5px",
             textTransform: "uppercase"
           }}>
-            Автор
+            Author
           </label>
           <input
             type="text"
@@ -131,7 +131,7 @@ function AddBookForm({ onAddBook, onClose }) {
           />
         </div>
 
-        {/* ЖАНР */}
+        {}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           <label style={{
             color: "var(--text-muted)",
@@ -140,7 +140,7 @@ function AddBookForm({ onAddBook, onClose }) {
             letterSpacing: "0.5px",
             textTransform: "uppercase"
           }}>
-            Жанр
+            Genre
           </label>
           <div style={{
             display: "grid",
@@ -175,14 +175,14 @@ function AddBookForm({ onAddBook, onClose }) {
           </div>
         </div>
 
-        {/* ОШИБКА */}
+        {}
         {error && (
           <p style={{ margin: 0, color: "#e05757", fontSize: "13px" }}>
             ⚠️ {error}
           </p>
         )}
 
-        {/* КНОПКИ */}
+        {}
         <div style={{ display: "flex", gap: "10px", marginTop: "4px" }}>
           <button
             type="submit"
@@ -203,7 +203,7 @@ function AddBookForm({ onAddBook, onClose }) {
             onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = "translateY(-1px)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; }}
           >
-            {loading ? "Добавляем..." : "➕ Add book"}
+            {loading ? "Adding..." : "➕ Add book"}
           </button>
 
           <button

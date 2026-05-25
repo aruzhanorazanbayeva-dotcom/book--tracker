@@ -7,7 +7,7 @@ import {
   updateBookById,
   updateStatusLogic,
 } from "../services/booksService";
-
+import useLoading from "../hooks/useLoading";
 import { notify } from "../utils/notify";
 
 export const BooksContext = createContext();
@@ -15,28 +15,28 @@ export const BooksContext = createContext();
 export function BooksProvider({ children }) {
   const [books, setBooks] = useState([]);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-
-  const fetchBooks = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const data = await getBooks();
-      setBooks(data || []);
-    } catch (err) {
-      setError("Failed to load books");
-      notify("Failed to load books", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { loading, error, startLoading, stopLoading, setErrorState } = useLoading();
 
   useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        startLoading();
+    
+        const data = await getBooks();
+        setBooks(data || []);
+        
+        stopLoading(); 
+      } catch (err) {
+        setErrorState("Failed to load books"); 
+        notify("Failed to load books", "error");
+      }
+    };
+
     fetchBooks();
-  }, []);
+    
+    // Вносим стабильные методы из кастомного хука useLoading в массив зависимостей.
+    // Теперь компилятор Webpack и ESLint полностью довольны, а варнинг исчез.
+  }, [startLoading, stopLoading, setErrorState]); 
 
   const addBook = async ({ title, author, genre }) => {
     try {
@@ -56,12 +56,10 @@ export function BooksProvider({ children }) {
       };
 
       const created = await createBook(newBook);
-
-      setBooks((prev) => [created, ...prev]);
-
+      setBooks((prev) => [created, ...prev]); 
       notify("Book added successfully", "success");
     } catch (err) {
-      setError("Failed to create book");
+      setErrorState("Failed to create book");
       notify("Failed to create book", "error");
     }
   };
@@ -72,7 +70,6 @@ export function BooksProvider({ children }) {
       if (!book) return;
 
       const updatedBook = updateStatusLogic(book, status);
-
       const result = await updateBookById(id, updatedBook);
 
       setBooks((prev) =>
@@ -81,12 +78,11 @@ export function BooksProvider({ children }) {
 
       notify("Status updated", "info");
     } catch (err) {
-      setError("Failed to update status");
+      setErrorState("Failed to update status");
       notify("Failed to update status", "error");
     }
   };
 
- 
   const updateBook = async (id, data) => {
     try {
       const result = await updateBookById(id, data);
@@ -97,43 +93,36 @@ export function BooksProvider({ children }) {
 
       notify("Book updated", "success");
     } catch (err) {
-      setError("Failed to update book");
+      setErrorState("Failed to update book");
       notify("Failed to update book", "error");
     }
   };
 
-
   const deleteBook = async (id) => {
     try {
       await deleteBookById(id);
-
-      setBooks((prev) => prev.filter((b) => b.id !== id));
+      setBooks((prev) => prev.filter((b) => b.id !== id)); 
 
       notify("Book deleted", "success");
     } catch (err) {
-      setError("Failed to delete book");
+      setErrorState("Failed to delete book");
       notify("Failed to delete book", "error");
     }
   };
 
- 
   const isEmpty = !loading && books.length === 0;
 
   return (
     <BooksContext.Provider
       value={{
         books,
-
         loading,
         error,
         isEmpty,
-
         addBook,
         updateStatus,
         updateBook,
         deleteBook,
-
-        fetchBooks,
       }}
     >
       {children}
